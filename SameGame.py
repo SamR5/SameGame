@@ -13,7 +13,7 @@ else:
 
 
 
-M, N = 10, 10 # size rows*columns
+M, N = 15, 15 # size rows*columns
 colors = ["gray", "red", "green", "blue"]
 cs = 40 # cell size
 nei = [(-1, 0), (1, 0), (0, -1), (0, 1)] # neighbors of a cell
@@ -23,6 +23,8 @@ class SameGame():
     def __init__(self, master, m=M, n=N):
         self.master = master
         self.m, self.n = m, n
+        self.grid = [[r.randint(1, len(colors)-1) for j in range(self.n)]
+                     for i in range(self.m)]
         self.gui()
         self.reset()
 
@@ -41,6 +43,17 @@ class SameGame():
         self.canvas = tk.Canvas(self.master, width=self.n*cs,
                                 height=self.m*cs)
         self.canvas.pack()
+        # create the rectangles and center mark first for initialization
+        # don't merge the for loops to keep the order of element in the canvas
+        for i in range(self.m):
+            for j in range(self.n):
+                self.canvas.create_rectangle(j*cs, i*cs, (j+1)*cs, (i+1)*cs,
+                                             fill=colors[self.grid[i][j]], width=1)
+        for i in range(self.m):
+            for j in range(self.n):
+                self.canvas.create_rectangle((j+0.33)*cs, (i+0.33)*cs,
+                                             (j+0.66)*cs, (i+0.66)*cs,
+                                             fill="black")
         self.canvas.bind("<Button-1>", self.click_cell)
         self.canvas.bind_all("<KeyPress>", self.key_press)
         # status bar
@@ -61,12 +74,11 @@ class SameGame():
     def update_display(self):
         for i in range(self.m):
             for j in range(self.n):
-                self.canvas.create_rectangle(j*cs, i*cs, (j+1)*cs, (i+1)*cs,
-                                             fill=colors[self.grid[i][j]], width=1)
+                self.canvas.itemconfig(i*self.m+j+1, fill=colors[self.grid[i][j]])
                 if (i, j) in self.selected:
-                    self.canvas.create_rectangle((j+0.33)*cs, (i+0.33)*cs,
-                                                 (j+0.66)*cs, (i+0.66)*cs,
-                                                 fill="black")
+                    self.canvas.itemconfig(self.m*self.n+i*self.m+j+1, state="normal")
+                else:
+                    self.canvas.itemconfig(self.m*self.n+i*self.m+j+1, state="hidden")
 
     def click_cell(self, event=None):
         row, col = event.y//cs, event.x//cs
