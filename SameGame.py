@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-# Same game gird generator
+# Same game from Simon Tatham's Portable Puzzle Collection
 
 import random as r
 import time as t
@@ -13,7 +13,7 @@ else:
 
 
 
-M, N = 15, 15 # size rows*columns
+M, N = 10, 10 # size rows*columns
 colors = ["gray", "red", "green", "blue"]
 cs = 40 # cell size
 nei = [(-1, 0), (1, 0), (0, -1), (0, 1)] # neighbors of a cell
@@ -74,11 +74,11 @@ class SameGame():
     def update_display(self):
         for i in range(self.m):
             for j in range(self.n):
-                self.canvas.itemconfig(i*self.m+j+1, fill=colors[self.grid[i][j]])
+                self.canvas.itemconfig(i*self.n+j+1, fill=colors[self.grid[i][j]])
                 if (i, j) in self.selected:
-                    self.canvas.itemconfig(self.m*self.n+i*self.m+j+1, state="normal")
+                    self.canvas.itemconfig(self.m*self.n+i*self.n+j+1, state="normal")
                 else:
-                    self.canvas.itemconfig(self.m*self.n+i*self.m+j+1, state="hidden")
+                    self.canvas.itemconfig(self.m*self.n+i*self.n+j+1, state="hidden")
 
     def click_cell(self, event=None):
         row, col = event.y//cs, event.x//cs
